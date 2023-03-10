@@ -136,7 +136,8 @@ exports.editdata = async (req,res) => {
 }
 
 exports.deletedata = async (req, res) => {
-  const selected = req.body.selected
+  try {
+    const selected = req.body.selected
   selected.map( async (item)=>{
       Movie.findOneAndDelete({name:item}, function (err, docs) {
         if (err){
@@ -148,5 +149,8 @@ exports.deletedata = async (req, res) => {
     });
     })
   res.send({status:'success',message:'Data deleted successfully'})
-
+} catch (error) {
+  return res.status(400).json({ success: false, message: error.message });
+    
+}
 };
