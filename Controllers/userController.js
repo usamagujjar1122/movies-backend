@@ -11,8 +11,11 @@ var transporter = nodemailer.createTransport({
   port: 587,
   secure: false,
   auth: {
-    user: "e4a.live.official@gmail.com",
-    pass: "fjvieqmasuuwwvrd",
+    // user: "e4a.live.official@gmail.com",
+    // pass: "fjvieqmasuuwwvrd",
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD,
+
   },
 });
 
