@@ -4,7 +4,7 @@ var nodemailer = require("nodemailer");
 const jwt_decode = require("jwt-decode");
 const User = require('../Models/userModel');
 const Deposit = require("../Models/Deposits");
-const WithdraW = require("../Models/WithdraW");
+const WithdraW = require("../Models/Withdraw");
 const Msgs = require("../Models/Msgs");
 var transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
