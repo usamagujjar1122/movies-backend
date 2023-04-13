@@ -7,7 +7,9 @@ const userModel = new mongoose.Schema({
     },
     username:{
         type:String,
-        require:true
+        require:true,
+        unique:true
+
     },
     email:{
         type:String,
@@ -18,41 +20,31 @@ const userModel = new mongoose.Schema({
         type:String,
         require:true
     },
-    
-    secq:{
-        type:String,
-        required:true,
-    },
-    seca:{
-        type:String,
-        required:true,
-    },
-    btcaddress:{
-        type:String,
-    },
-    ethaddress:{
-        type:String,
-    },
-    trcaddress:{
-        type:String,
-    },
-    bnbaddress:{
-        type:String,
-    },
     referedby:{
         type:String,
     },
-    isverified:{
-        type:Boolean,
+    country:{
+        type:String,
     },
     balance:{
         type:Number,
+        default:0,
     },
-    commision:{
+    tdeposit:{
         type:Number,
+        default:0,
     },
-    earnedc:{
+    twithdraw:{
         type:Number,
+        default:0,
+    },
+    vip:{
+        type:Number,
+        default:0,
+    },
+    active:{
+        type:Boolean,
+        default:false,
     },
     lastaccess:{
         type:String,
@@ -62,7 +54,6 @@ const userModel = new mongoose.Schema({
         type:Date,
         default:Date.now
     }
-
 })
 
 const User = mongoose.model('Users',userModel)

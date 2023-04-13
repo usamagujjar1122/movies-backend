@@ -11,11 +11,11 @@ app.use(cors());
 
 app.use("/user", userRoutes);
 // mongoose
-//   .connect("mongodb://0.0.0.0:27017/movies", { useNewUrlParser: true })
+//   .connect("mongodb://0.0.0.0:27017/earn", { useNewUrlParser: true })
 //   .then(() => {
 //     console.log("db connected");
 //   });
-mongoose.set("strictQuery", false);
+// mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGODB_URL,{useNewUrlParser: true,useUnifiedTopology: true,})
     .then((err)=>{console.log("connected")})
 
