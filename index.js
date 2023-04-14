@@ -15,11 +15,13 @@ app.use("/user", userRoutes);
 //   .then(() => {
 //     console.log("db connected");
 //   });
-// mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGODB_URL,{useNewUrlParser: true,useUnifiedTopology: true,})
     .then((err)=>{console.log("connected")})
 
 
+
+
+// mongoose.set("strictQuery", false);
 app.listen(PORT, function () {
   console.log("app running on 5000");
 });

@@ -152,8 +152,9 @@ exports.login = async (req, res) => {
 exports.loaduser = async (req, res) => {
   const token = req.body.token
   const { _id } = (JSON.parse(atob(token.split('.')[1])))
+  const docs = await User.findById(_id)
+  if(docs){
   try {
-    const docs = await User.findById(_id)
     const refs = await User.find({ referedby: docs.username })
     res.status(200).json({
       success: true,
@@ -163,6 +164,8 @@ exports.loaduser = async (req, res) => {
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
   }
+} else {
+  return res.status(200).json({ success: false, message: 'Invalid Token' });}
 }
 
 exports.history = async (req, res) => {
@@ -367,6 +370,7 @@ exports.vip = async (req, res) => {
       await User.findByIdAndUpdate(_id, { $inc: { balance: -price }, vip: level, active: true })
       let current = user.referedby
       let denom
+      if(current){
       for (let i = 0; i < 8; i++) {
         switch (i) {
           case 0:
@@ -396,12 +400,20 @@ exports.vip = async (req, res) => {
           default:
             break;
         }
+        const d = await User.findOne({username:current})
+        if(d.vip===1){
         const data = await User.findOneAndUpdate({ username: current }, { $inc: { balance: +(price / denom).toFixed(2) } })
-        if (data) {
+        if (data.referedby) {
           current = data.referedby
         } else {
           break;
         }
+      } else if(d.referedby) {
+        current = d.referedby
+      } else {
+        break;
+      }
+      }
       }
       res.status(200).json({
         success: true,
