@@ -32,6 +32,11 @@ exports.signup = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Please Enter User Name" });
     }
+    if (username.includes(' ')) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Space not allowed in username" });
+    }
     if (!email) {
       return res
         .status(400)
@@ -247,12 +252,12 @@ exports.updatepassword = async (req, res) => {
 exports.referals = async (req, res) => {
   const token = req.body.token
   const { _id } = (JSON.parse(atob(token.split('.')[1])))
-  let refs = [[], [], [], [], [], [], [], [], []]
+  let refs = [[], [], [], [], [], [], [], [], [],[],[]]
   let current = null
   const { username } = await User.findById(_id)
   current = username
   try {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
       if (i === 0) {
         refs[i] = await User.find({ referedby: current })
       } else {
@@ -371,7 +376,7 @@ exports.vip = async (req, res) => {
       let current = user.referedby
       let denom
       if(current){
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 10; i++) {
         switch (i) {
           case 0:
             denom = 4
@@ -396,6 +401,12 @@ exports.vip = async (req, res) => {
             break;
           case 7:
             denom = 50
+            break;
+          case 8:
+            denom = 100
+            break;
+          case 9:
+            denom = 100
             break;
           default:
             break;
