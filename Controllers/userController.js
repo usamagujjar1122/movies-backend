@@ -252,7 +252,7 @@ exports.updatepassword = async (req, res) => {
 exports.referals = async (req, res) => {
   const token = req.body.token
   const { _id } = (JSON.parse(atob(token.split('.')[1])))
-  let refs = [[], [], [], [], [], [], [], [], [],[],[]]
+  let refs = [[], [], [], [], [], [], [], [], [],[]]
   let current = null
   const { username } = await User.findById(_id)
   current = username
