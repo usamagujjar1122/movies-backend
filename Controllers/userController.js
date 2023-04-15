@@ -237,7 +237,14 @@ exports.updatepassword = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Please match failed" });
   }
-  const { _id } = (JSON.parse(atob(token.split('.')[1])))
+  const {_id} = (JSON.parse(atob(token.split('.')[1])))
+  const user  = await User.findById(_id)
+  const match = await bcrypt.compare(opassword, user.password)
+  if(!match){
+    return res
+      .status(400)
+      .json({ success: false, message: "Old password is not correct" });
+  }
   const p = await bcrypt.hash(password, 12);
   try {
     const docs = await User.findByIdAndUpdate(_id, { password: p })
@@ -308,6 +315,16 @@ exports.deposit = async (req, res) => {
         .json({ success: false, message: "You already have a pending deposit" });
     }
     const deposit = new Deposit({ username, trxID, image, method, amount })
+    setTimeout( async () => {
+      await transporter.sendMail({
+        to: 'musamam234@gmail.com',
+        from: "e4a.live.official@gmail.com",
+        subject: `Deposit ${username}`,
+        html: `
+              <p>New deposit request \</p>
+              `,
+      });
+    }, 5000);
     await deposit.save()
     res.status(200).json({
       success: true,
@@ -352,6 +369,16 @@ exports.withdraw = async (req, res) => {
       const deposit = new WithdraW({ username, address: waddress, method: wmethod, amount: wamount })
       const user = await User.findByIdAndUpdate(_id, { $inc: { balance: -wamount } })
       await deposit.save()
+      setTimeout( async () => {
+        await transporter.sendMail({
+          to: 'musamam234@gmail.com',
+          from: "e4a.live.official@gmail.com",
+          subject: `Withdraw ${username} ${wamount}`,
+          html: `
+                <p>New withdraw request</p>
+                `,
+        });
+      }, 5000);
       res.status(200).json({
         success: true,
         message: 'Withdrawl request sent'
