@@ -158,19 +158,20 @@ exports.loaduser = async (req, res) => {
   const token = req.body.token
   const { _id } = (JSON.parse(atob(token.split('.')[1])))
   const docs = await User.findById(_id)
-  if(docs){
-  try {
-    const refs = await User.find({ referedby: docs.username })
-    res.status(200).json({
-      success: true,
-      data: docs,
-      refs
-    })
-  } catch (error) {
-    return res.status(400).json({ success: false, message: error.message });
+  if (docs) {
+    try {
+      const refs = await User.find({ referedby: docs.username })
+      res.status(200).json({
+        success: true,
+        data: docs,
+        refs
+      })
+    } catch (error) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  } else {
+    return res.status(200).json({ success: false, message: 'Invalid Token' });
   }
-} else {
-  return res.status(200).json({ success: false, message: 'Invalid Token' });}
 }
 
 exports.history = async (req, res) => {
@@ -252,7 +253,7 @@ exports.updatepassword = async (req, res) => {
 exports.referals = async (req, res) => {
   const token = req.body.token
   const { _id } = (JSON.parse(atob(token.split('.')[1])))
-  let refs = [[], [], [], [], [], [], [], [], [],[]]
+  let refs = [[], [], [], [], [], [], [], [], [], []]
   let current = null
   const { username } = await User.findById(_id)
   current = username
@@ -375,56 +376,56 @@ exports.vip = async (req, res) => {
       await User.findByIdAndUpdate(_id, { $inc: { balance: -price }, vip: level, active: true })
       let current = user.referedby
       let denom
-      if(current){
-      for (let i = 0; i < 10; i++) {
-        switch (i) {
-          case 0:
-            denom = 4
+      if (current) {
+        for (let i = 0; i < 10; i++) {
+          switch (i) {
+            case 0:
+              denom = 4
+              break;
+            case 1:
+              denom = 6.66666666
+              break;
+            case 2:
+              denom = 10
+              break;
+            case 3:
+              denom = 12.5
+              break;
+            case 4:
+              denom = 16.66666666
+              break;
+            case 5:
+              denom = 25
+              break;
+            case 6:
+              denom = 33.33333333
+              break;
+            case 7:
+              denom = 50
+              break;
+            case 8:
+              denom = 100
+              break;
+            case 9:
+              denom = 100
+              break;
+            default:
+              break;
+          }
+          const d = await User.findOne({ username: current })
+          if (d.vip === 1) {
+            const data = await User.findOneAndUpdate({ username: current }, { $inc: { balance: +(price / denom).toFixed(2) } })
+            if (data.referedby) {
+              current = data.referedby
+            } else {
+              break;
+            }
+          } else if (d.referedby) {
+            current = d.referedby
+          } else {
             break;
-          case 1:
-            denom = 6.66666666
-            break;
-          case 2:
-            denom = 10
-            break;
-          case 3:
-            denom = 12.5
-            break;
-          case 4:
-            denom = 16.66666666
-            break;
-          case 5:
-            denom = 25
-            break;
-          case 6:
-            denom = 33.33333333
-            break;
-          case 7:
-            denom = 50
-            break;
-          case 8:
-            denom = 100
-            break;
-          case 9:
-            denom = 100
-            break;
-          default:
-            break;
+          }
         }
-        const d = await User.findOne({username:current})
-        if(d.vip===1){
-        const data = await User.findOneAndUpdate({ username: current }, { $inc: { balance: +(price / denom).toFixed(2) } })
-        if (data.referedby) {
-          current = data.referedby
-        } else {
-          break;
-        }
-      } else if(d.referedby) {
-        current = d.referedby
-      } else {
-        break;
-      }
-      }
       }
       res.status(200).json({
         success: true,
@@ -545,7 +546,6 @@ exports.vip = async (req, res) => {
 // };
 
 exports.sendmail = async (req, res) => {
-  console.log('requested')
   try {
     const otp = Math.floor(100000 + Math.random() * 900000)
     await transporter.sendMail({
@@ -570,7 +570,6 @@ exports.sendmail = async (req, res) => {
     </div>
             `,
     });
-    console.log('sent')
     return res.status(200).json({ success: true, otp: otp })
   } catch (error) {
     return res.status(400).json({ success: false, message: error.message });
@@ -632,7 +631,7 @@ exports.getwithdraws = async (req, res) => {
 
 exports.msg = async (req, res) => {
   const { msg, token } = req.body
-  if((!msg)){
+  if ((!msg)) {
     res.status(400).json({ success: false, message: 'Please Enter your message' })
   }
   try {
@@ -673,7 +672,7 @@ exports.read = async (req, res) => {
 exports.approveDeposit = async (req, res) => {
   const { item } = req.body
   try {
-    await User.findOneAndUpdate({ username: item.username }, { $inc: { balance: +item.amount, tdeposit: +item.amount  } })
+    await User.findOneAndUpdate({ username: item.username }, { $inc: { balance: +item.amount, tdeposit: +item.amount } })
     const deposit = await Deposit.findByIdAndUpdate(item._id, { status: 'approved' })
     if (deposit) {
       res.status(200).json({ success: true, message: 'Approved' })
@@ -703,7 +702,7 @@ exports.approveWithdraw = async (req, res) => {
   const { item } = req.body
   try {
     const deposit = await WithdraW.findByIdAndUpdate(item._id, { status: 'approved' })
-    await User.findOneAndUpdate({username:item.username},{$inc: { twithdraw: +item.amount }})
+    await User.findOneAndUpdate({ username: item.username }, { $inc: { twithdraw: +item.amount } })
     if (deposit) {
       res.status(200).json({ success: true, message: 'Approved' })
     } else {
@@ -742,3 +741,69 @@ exports.delmsg = async (req, res) => {
     return res.status(400).json({ success: false, message: error.message });
   }
 };
+
+exports.forgot = async (req, res) => {
+  const { email } = req.body
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Please enter your email address' });
+  }
+  const user = await User.findOne({ email: email })
+  if (user) {
+    try {
+      const otp = Math.floor(100000 + Math.random() * 900000)
+      await transporter.sendMail({
+        to: req.body.email,
+        from: "e4a.live.official@gmail.com",
+        subject: "E4A OTP",
+        html: `
+        <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
+        <div style="margin:50px auto;width:70%;padding:20px 0">
+          <div style="border-bottom:1px solid #eee">
+            <a href="" style="font-size:1.4em;color: #00466a;text-decoration:none;font-weight:600">E4A</a>
+          </div>
+          <p style="font-size:1.1em">Hi,</p>
+          <p>Thank you for choosing E4A. Use the following OTP to reset your password. OTP is valid for 5 minutes</p>
+          <h2 style="background: #00466a;margin: 0 auto;width: max-content;padding: 0 10px;color: #fff;border-radius: 4px;">${otp}</h2>
+          <p style="font-size:0.9em;">Regards,<br />Entertainment4All</p>
+          <hr style="border:none;border-top:1px solid #eee" />
+          <div style="float:right;padding:8px 0;color:#aaa;font-size:0.8em;line-height:1;font-weight:300">
+            <p>E4A Inc</p>
+          </div>
+        </div>
+      </div>
+              `,
+      });
+      return res.status(200).json({ success: true, otp })
+    } catch (error) {
+      return res.status(400).json({ success: false, message: error.message });
+    }
+  } else {
+    return res.status(400).json({ success: false, message: "Not a registered user" });
+  }
+
+};
+
+exports.reset = async (req, res) => {
+  const { password, cpassword, email } = req.body
+  if (!password) {
+    return res.status(400).json({ success: false, message: 'Please enter new password' });
+  }
+  if (password.length<8) {
+    return res.status(400).json({ success: false, message: 'Please must be 8 characters' });
+  }
+  if (!cpassword) {
+    return res.status(400).json({ success: false, message: 'Please enter confirm password' });
+  }
+  if (password != cpassword) {
+    return res.status(400).json({ success: false, message: 'Passwords match failed' });
+  }
+  try {
+    const p = await bcrypt.hash(password, 12);
+    await User.findOneAndUpdate({ email: email }, { password: p })
+    return res.status(200).json({ success: true, message: 'Password changed' })
+  } catch (error) {
+    return res.status(400).json({ success: false, message: error.message });
+  }
+}
+
+
