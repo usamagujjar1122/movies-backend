@@ -347,10 +347,10 @@ exports.withdraw = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Please enter amount" });
   }
-  if (wamount < 10) {
+  if (wamount < 2) {
     return res
       .status(400)
-      .json({ success: false, message: "Miniumun withdraw amount in $10" });
+      .json({ success: false, message: "Miniumun withdraw amount in $2" });
   }
   const { _id } = (JSON.parse(atob(token.split('.')[1])))
   try {
