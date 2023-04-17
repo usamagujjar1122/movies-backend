@@ -316,11 +316,11 @@ exports.deposit = async (req, res) => {
     }
     const deposit = new Deposit({ username, trxID, image, method, amount })
     await transporter.sendMail({
-      to: 'musamam234@gmail.com',
+      to: "musamam234@gmail.com",
       from: "e4a.live.official@gmail.com",
-      subject: `Deposit ${username}`,
+      subject: "Deposit",
       html: `
-              <p>New deposit request \</p>
+              <p>New deposit request ${username}</p>
               `,
     });
     await deposit.save()
@@ -367,11 +367,11 @@ exports.withdraw = async (req, res) => {
       const deposit = new WithdraW({ username, address: waddress, method: wmethod, amount: wamount })
       const user = await User.findByIdAndUpdate(_id, { $inc: { balance: -wamount } })
       await transporter.sendMail({
-        to: 'musamam234@gmail.com',
+        to: "musamam234@gmail.com",
         from: "e4a.live.official@gmail.com",
-        subject: `Withdraw ${username} ${wamount}`,
+        subject: "Withdraw",
         html: `
-                <p>New withdraw request</p>
+                <p>New withdraw request ${username} ${wamount}</p>
                 `,
       });
       await deposit.save()
