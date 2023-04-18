@@ -6,13 +6,6 @@ const User = require('../Models/userModel');
 const Deposit = require("../Models/Deposits");
 const WithdraW = require("../Models/Withdraw");
 const Msgs = require("../Models/Msgs");
-const {Storage} = require('@google-cloud/storage')
-const path = require('path'); 
-const gc = new Storage({
-  keyFilename: path.join(__dirname,"../profile-368716-3fbed51629a3.json"),
-  projectId : 'profile-368716'
-})
-gc.getBuckets().then(x=>console.log(x))
 var transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
