@@ -10,13 +10,13 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.use("/user", userRoutes);
-mongoose
-  .connect("mongodb://0.0.0.0:27017/earn", { useNewUrlParser: true })
-  .then(() => {
-    console.log("db connected");
-  });
-// mongoose.connect(process.env.MONGODB_URL,{useNewUrlParser: true,useUnifiedTopology: true,})
-//     .then((err)=>{console.log("connected")})
+// mongoose
+//   .connect("mongodb://0.0.0.0:27017/earn", { useNewUrlParser: true })
+//   .then(() => {
+//     console.log("db connected");
+//   });
+mongoose.connect(process.env.MONGODB_URL,{useNewUrlParser: true,useUnifiedTopology: true,})
+    .then((err)=>{console.log("connected")})
 
 
 
