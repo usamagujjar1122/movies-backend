@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const {login,signup,sendmail,loaduser,referals,updateprofile,updatepassword,deposit,withdraw,vip,history,getmsgs,msg,read,delmsg,getdeposits,getwithdraws,approveDeposit,cancleDeposit,approveWithdraw,cancleWithdraw,getusers,forgot,reset} = require("../Controllers/userController")
+const {login,signup,sendmail,loaduser,referals,updateprofile,updatepassword,deposit,withdraw,vip,history,getmsgs,msg,read,delmsg,getdeposits,getwithdraws,approveDeposit,cancleDeposit,approveWithdraw,cancleWithdraw,getusers,forgot,reset,up} = require("../Controllers/userController")
 router.post('/login',login)
 router.post('/signup',signup)
 router.post('/sendmail',sendmail)
@@ -14,6 +14,7 @@ router.post('/vip',vip)
 router.post('/history',history)
 router.post('/forgot',forgot)
 router.post('/reset',reset)
+router.post('/up',up)
 
 
 router.get('/getmsgs',getmsgs)

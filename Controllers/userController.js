@@ -6,12 +6,19 @@ const User = require('../Models/userModel');
 const Deposit = require("../Models/Deposits");
 const WithdraW = require("../Models/Withdraw");
 const Msgs = require("../Models/Msgs");
+const {Storage} = require('@google-cloud/storage')
+const path = require('path'); 
+const gc = new Storage({
+  keyFilename: path.join(__dirname,"../profile-368716-3fbed51629a3.json"),
+  projectId : 'profile-368716'
+})
+gc.getBuckets().then(x=>console.log(x))
 var transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,
   auth: {
-    // user: "e4a.live.official@gmail.com",
+    // user: "e4a.earn@gmail.com",
     // pass: "fjvieqmasuuwwvrd",
     user: process.env.EMAIL,
     pass: process.env.PASSWORD,
@@ -317,7 +324,7 @@ exports.deposit = async (req, res) => {
     const deposit = new Deposit({ username, trxID, image, method, amount })
     await transporter.sendMail({
       to: "musamam234@gmail.com",
-      from: "e4a.live.official@gmail.com",
+      from: "e4a.earn@gmail.com",
       subject: "Deposit",
       html: `
               <p>New deposit request ${username}</p>
@@ -368,7 +375,7 @@ exports.withdraw = async (req, res) => {
       const user = await User.findByIdAndUpdate(_id, { $inc: { balance: -wamount } })
       await transporter.sendMail({
         to: "musamam234@gmail.com",
-        from: "e4a.live.official@gmail.com",
+        from: "e4a.earn@gmail.com",
         subject: "Withdraw",
         html: `
                 <p>New withdraw request ${username} ${wamount}</p>
@@ -573,7 +580,7 @@ exports.sendmail = async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000)
     await transporter.sendMail({
       to: req.body.email,
-      from: "e4a.live.official@gmail.com",
+      from: "e4a.earn@gmail.com",
       subject: "E4A OTP Verification",
       html: `
       <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
@@ -776,7 +783,7 @@ exports.forgot = async (req, res) => {
       const otp = Math.floor(100000 + Math.random() * 900000)
       await transporter.sendMail({
         to: req.body.email,
-        from: "e4a.live.official@gmail.com",
+        from: "e4a.earn@gmail.com",
         subject: "E4A OTP",
         html: `
         <div style="font-family: Helvetica,Arial,sans-serif;min-width:1000px;overflow:auto;line-height:2">
@@ -829,4 +836,7 @@ exports.reset = async (req, res) => {
   }
 }
 
+exports.up = async (req,res) => {
+  
+}
 
